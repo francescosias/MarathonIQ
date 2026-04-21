@@ -1,0 +1,25 @@
+# packaging
+pip
+setuptools
+twine
+wheel
+
+# python and debugging
+ipdb
+ipykernel
+
+# data viz
+matplotlib
+seaborn
+
+# jupyter
+jupyter-contrib-core
+jupyter-contrib-nbextensions
+jupyter-highlight-selected-word
+jupyter-nbextensions-configurator
+jupyter-resource-usage
+jupyterlab
+jupyterlab-pygments
+jupyterlab-widgets
+notebook
+traitlets

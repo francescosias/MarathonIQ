@@ -1,0 +1,19 @@
+# data science
+numpy
+pandas
+
+# Uncomment if you use sklearn
+scikit-learn
+
+# Install the correct TensorFlow version
+# Uncomment if you use TensorFlow
+tensorflow    # For both Intel and Apple silicon
+keras
+
+# Google Cloud
+# Uncomment if you use Google Cloud Storage
+# google-cloud-storage
+
+# API
+fastapi
+uvicorn
