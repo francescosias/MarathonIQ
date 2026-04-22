@@ -9,6 +9,11 @@ if os.path.isfile('requirements.txt'):
         content = f.readlines()
     requirements.extend([x.strip() for x in content if 'git+' not in x])
 
+if os.path.isfile('requirements_dev.txt'):
+    with open('requirements_dev.txt') as f:
+        content = f.readlines()
+    requirements.extend([x.strip() for x in content if 'git+' not in x])
+
 setup(name='marathon_project',
       version="0.0.1",
       description="Marathon Race Prediction and Analysis",
