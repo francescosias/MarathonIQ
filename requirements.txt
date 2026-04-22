@@ -2,6 +2,9 @@
 numpy
 pandas
 
+#XGBoost
+xgboost
+
 # Uncomment if you use sklearn
 scikit-learn
 
