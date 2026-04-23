@@ -13,3 +13,6 @@ google-cloud-storage
 # API
 fastapi
 uvicorn
+
+# Model
+xgboost

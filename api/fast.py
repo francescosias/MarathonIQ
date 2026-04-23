@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional
 
 from project_logic.registry import load_model_trained
 from project_logic.predict import predict
@@ -22,7 +23,18 @@ app.add_middleware(
 #WHICH DATA WE EXPECT FROM USER TO SUBMIT, WILL BE ADJUSTED LATER
 class RunnerData(BaseModel):
     age: int
-    weekly_training_km: float
+    weekly_mileage_km: float
+    running_experience_months: int
+    resting_heart_rate_bpm: int
+    vo2_max: float
+    recovery_score: float
+    injury_count: int
+    nutrition_score: float
+    run_club_attendance_rate: int
+
+    course_difficulty: str
+    injury_severity: str
+    marathon_weather: str
 
 # Index / Status Route
 @app.get("/")

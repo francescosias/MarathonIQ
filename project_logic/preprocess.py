@@ -15,7 +15,7 @@ def preprocess_features(user_dict: dict) -> pd.DataFrame:
 
     # Apply mapping if these keys exist in the user's input
     if 'course_difficulty' in df.columns:
-        df['course_difficulty'] = df['course_difficulty'].map(course_map)
+        df['course_difficulty'] = df['course_difficulty'].map(course_map).fillna(1)
     if 'injury_severity' in df.columns:
         df['injury_severity']   = df['injury_severity'].map(injury_map).fillna(0)
 

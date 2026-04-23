@@ -1,0 +1,13 @@
+__pycache__
+*.pyc
+.env
+.venv
+env/
+venv/
+.git
+.gitignore
+.ipynb_checkpoints
+raw_data/
+notebooks/
+tests/
+*.egg-info
