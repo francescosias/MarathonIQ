@@ -36,6 +36,7 @@ ipykernel
 # data viz
 matplotlib
 seaborn
+streamlit
 
 # jupyter
 jupyter-contrib-core==0.4.0
