@@ -42,7 +42,7 @@ models/
 .env.yaml
 .credentials
 secrets.toml
-*.json
+#*.json
 
 # User defined extras
 # Complete to your desire
