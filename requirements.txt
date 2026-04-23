@@ -5,6 +5,9 @@ pandas
 #XGBoost
 xgboost
 
+#statsmodels
+statsmodels
+
 # Uncomment if you use sklearn
 scikit-learn
 
