@@ -32,9 +32,12 @@ class RunnerData(BaseModel):
     nutrition_score: float
     run_club_attendance_rate: int
 
-    course_difficulty: str
-    injury_severity: str
-    marathon_weather: str
+    course_difficulty: int
+    injury_severity: float
+    marathon_weather_Cold: float
+    marathon_weather_Hot: float
+    marathon_weather_Rainy: float
+    marathon_weather_Windy:float
 
 # Index / Status Route
 @app.get("/")
