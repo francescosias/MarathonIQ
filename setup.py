@@ -14,10 +14,9 @@ if os.path.isfile('requirements_dev.txt'):
         content = f.readlines()
     requirements.extend([x.strip() for x in content if 'git+' not in x])
 
-
-setup(name='packagename',
+setup(name='marathon_project',
       version="0.0.1",
-      description="Project Description",
+      description="Marathon Race Prediction and Analysis",
       packages=find_packages(),
       install_requires=requirements,
       test_suite='tests',
