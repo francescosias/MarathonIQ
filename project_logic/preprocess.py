@@ -30,10 +30,10 @@ def preprocess_features(user_dict: dict) -> pd.DataFrame:
     # Create a new DataFrame filled with zeros to ensure strict column count
     df_processed = pd.DataFrame(0, index=np.arange(1), columns=expected_columns)
 
-    # 4. Populate the skeleton with the user's actual data
-    for col in df.columns:
-        if col in expected_columns:
-            df_processed[col] = df[col]
+    # 4. Populate with frontend values
+    for col in expected_columns:
+        if col in df.columns:
+            df_processed[col] = df[col].values
 
     # 5. Manual One-Hot Encoding (Adapted for single API request)
     # e.g., If user selects marathon_weather="Cold", set 'marathon_weather_Cold' to 1
