@@ -1,56 +1,71 @@
 import pandas as pd
 import numpy as np
 
-def preprocess_features(user_dict: dict) -> pd.DataFrame:
+def preprocess_features(user_dict: dict, model_type: str = "general") -> pd.DataFrame:
     """
-    Converts the raw JSON data (dictionary) received from the user
-    into the exact 15-column format expected by the trained XGBoost model.
+    Converts raw JSON data into the exact column format expected by the
+    specific model (general or expert).
     """
     # 1. Convert the single-row dictionary into a DataFrame
     df = pd.DataFrame([user_dict])
 
-    # 2. Ordinal Encoding (Mapping logic kept exactly from Chris's notebook)
-    course_map   = {"Flat": 1, "Mixed": 2, "Hilly": 3}
-    injury_map   = {"Minor": 1, "Moderate": 2, "Severe": 3}
+    # 2. Define the base skeleton (15 columns for general model)
+    if model_type == "expert":
+        expected_columns = [
+            'age',
+            'running_experience_months',
+            'personal_best_minutes',  # Correct position: 3rd column (index 2)
+            'weekly_mileage_km',
+            'resting_heart_rate_bpm',
+            'vo2_max',
+            'recovery_score',
+            'injury_count',
+            'injury_severity',
+            'nutrition_score',
+            'run_club_attendance_rate',
+            'course_difficulty',
+            'marathon_weather_Cold',
+            'marathon_weather_Hot',
+            'marathon_weather_Rainy',
+            'marathon_weather_Windy'
+        ]
+    else:
+        # General model doesn't have personal_best_minutes
+        expected_columns = [
+            'age', 'running_experience_months', 'weekly_mileage_km', 'resting_heart_rate_bpm',
+            'vo2_max', 'recovery_score', 'injury_count', 'injury_severity', 'nutrition_score',
+            'run_club_attendance_rate', 'course_difficulty',
+            'marathon_weather_Cold', 'marathon_weather_Hot', 'marathon_weather_Rainy', 'marathon_weather_Windy'
+        ]
 
-    # Apply mapping if these keys exist in the user's input
-    if 'course_difficulty' in df.columns:
-        df['course_difficulty'] = df['course_difficulty'].map(course_map).fillna(1)
-    if 'injury_severity' in df.columns:
-        df['injury_severity']   = df['injury_severity'].map(injury_map).fillna(0)
-
-    # 3. Build the skeleton of the 15 columns (Order must be identical to training!)
-    expected_columns = [
-        'age', 'running_experience_months', 'weekly_mileage_km', 'resting_heart_rate_bpm',
-        'vo2_max', 'recovery_score', 'injury_count', 'injury_severity', 'nutrition_score',
-        'run_club_attendance_rate', 'course_difficulty',
-        'marathon_weather_Cold', 'marathon_weather_Hot', 'marathon_weather_Rainy', 'marathon_weather_Windy'
-    ]
-
-    # Create a new DataFrame filled with zeros to ensure strict column count
+    # 4. Create a new DataFrame filled with zeros to ensure strict column count and order
     df_processed = pd.DataFrame(0, index=np.arange(1), columns=expected_columns)
 
+<<<<<<< HEAD
     # 4. Populate with frontend values
     for col in expected_columns:
         if col in df.columns:
             df_processed[col] = df[col].values
+=======
+    # 5. Populate the skeleton with the user's actual data
+    for col in expected_columns:
+        if col in df.columns:
+            df_processed[col] = df[col]
+>>>>>>> master
 
-    # 5. Manual One-Hot Encoding (Adapted for single API request)
-    # e.g., If user selects marathon_weather="Cold", set 'marathon_weather_Cold' to 1
-    if 'marathon_weather' in df.columns:
-        weather_val = df.iloc[0]['marathon_weather']
-        weather_col = f"marathon_weather_{weather_val}"
-        if weather_col in expected_columns:
-            df_processed[weather_col] = 1
 
-    # 6. Fill Missing Values (Using baseline medians from Chris's notebook)
+
+    # 6. Fill Missing Values (Medians)
+    # Added personal_best_minutes median for safety
     default_medians = {
         'vo2_max': 45.0,
-        'nutrition_score': 5.0
+        'recovery_score': 70.0,
+        'personal_best_minutes': 240.0
     }
 
-    for col, default_val in default_medians.items():
-        if pd.isna(df_processed.iloc[0][col]):
-            df_processed.at[0, col] = default_val
+    for col, val in default_medians.items():
+        if col in df_processed.columns and df_processed[col].iloc[0] == 0:
+            # We only fill if it's strictly zero/missing and exists in the model
+            df_processed[col] = df_processed[col].replace(0, val)
 
     return df_processed

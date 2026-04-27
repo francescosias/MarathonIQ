@@ -1,26 +1,32 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
+import joblib
+import os
 
-from project_logic.registry import load_model_trained
+# Custom project imports
 from project_logic.predict import predict
-
 
 app = FastAPI()
 
-app.state.model = load_model_trained()
+# --- MODEL LOADING ---
+# Ensure models are in the 'models' folder
+GEN_MODEL_PATH = os.path.join("models", "marathon_pipeline.joblib")
+EXP_MODEL_PATH = os.path.join("models", "marathon_expert_pipeline.joblib")
 
-# # Allow all requests (optional, good for development purposes)
+app.state.model_general = joblib.load(GEN_MODEL_PATH)
+app.state.model_expert = joblib.load(EXP_MODEL_PATH)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-#WHICH DATA WE EXPECT FROM USER TO SUBMIT, WILL BE ADJUSTED LATER
+# --- SCHEMA ---
 class RunnerData(BaseModel):
     age: int
     weekly_mileage_km: float
@@ -31,25 +37,37 @@ class RunnerData(BaseModel):
     injury_count: int
     nutrition_score: float
     run_club_attendance_rate: int
+    course_difficulty: int
+    injury_severity: float
+    marathon_weather_Cold: float
+    marathon_weather_Hot: float
+    marathon_weather_Rainy: float
+    marathon_weather_Windy: float
+    # Expert feature is optional to keep general endpoint stable
+    personal_best_minutes: Optional[float] = None
 
-    course_difficulty: str
-    injury_severity: str
-    marathon_weather: str
-
-# Index / Status Route
 @app.get("/")
 def index():
-    return {"status": "Marathon API is running smoothly!"}
+    return {"status": "Marathon API with Multi-Model support is running"}
 
-# Predict Route (JSON)
-@app.post('/predict')
-def get_prediction(runner: RunnerData):
-    # We convert the JSON data sent by the user into a dictionary
-    input_data = runner.dict()
+# --- PREDICTION ENDPOINTS ---
 
-    model = app.state.model
-    assert model is not None, "Model couldn't uploaded"
+@app.post('/predict/general')
+def get_general_prediction(runner: RunnerData):
+    """Uses general model logic"""
+    data = runner.dict()
+    # Explicitly set model_type to 'general'
+    res = predict(app.state.model_general, data, model_type="general")
+    return {"predicted_finish_time": res}
 
-    prediction = predict(model=model, data=input_data)
+@app.post('/predict/expert')
+def get_expert_prediction(runner: RunnerData):
+    """Uses expert model logic including personal best"""
+    data = runner.dict()
 
-    return {"predicted_finish_time": prediction}
+    if data.get('personal_best_minutes') is None:
+        return {"error": "Expert model requires 'personal_best_minutes' input."}
+
+    # Explicitly set model_type to 'expert'
+    res = predict(app.state.model_expert, data, model_type="expert")
+    return {"predicted_finish_time": res}
