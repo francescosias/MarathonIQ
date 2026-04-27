@@ -35,14 +35,13 @@ class RunnerData(BaseModel):
     vo2_max: float
     recovery_score: float
     injury_count: int
-    nutrition_score: float
     run_club_attendance_rate: int
     course_difficulty: int
     injury_severity: float
-    marathon_weather_Cold: float
-    marathon_weather_Hot: float
-    marathon_weather_Rainy: float
-    marathon_weather_Windy: float
+    marathon_weather_Cold: int
+    marathon_weather_Hot: int
+    marathon_weather_Rainy: int
+    marathon_weather_Windy: int
     # Expert feature is optional to keep general endpoint stable
     personal_best_minutes: Optional[float] = None
 
