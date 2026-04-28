@@ -7,7 +7,7 @@ import os
 
 # Custom project imports
 from project_logic.predict import predict
-
+from project_logic.preprocess import preprocess_features
 app = FastAPI()
 
 # --- MODEL LOADING ---
@@ -57,7 +57,7 @@ def get_general_prediction(runner: RunnerData):
     data = runner.dict()
     # Explicitly set model_type to 'general'
     res = predict(app.state.model_general, data, model_type="general")
-    return {"predicted_finish_time": res}
+    return {"predicted_finish_time": res, "pre-imputed data": data}
 
 @app.post('/predict/expert')
 def get_expert_prediction(runner: RunnerData):

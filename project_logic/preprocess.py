@@ -71,7 +71,7 @@ def preprocess_features(user_dict: dict,
     # 5. Median imputation — optional fields left at 0
     for col, median in medians.items():
         if col in df_processed.columns:
-            if df_processed[col].iloc[0] == 0:
+            if float(df_processed[col].iloc[0]) == 0:
                 df_processed[col] = median
 
     return df_processed
