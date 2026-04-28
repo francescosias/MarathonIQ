@@ -30,12 +30,12 @@ COLUMNS_GENERAL = [
 ]
 
 COLUMNS_EXPERT = [
-    'age', 'running_experience_months', 'personal_best_minutes',
+    'age', 'running_experience_months',
     'weekly_mileage_km', 'resting_heart_rate_bpm', 'vo2_max',
     'recovery_score', 'injury_count', 'injury_severity',
     'run_club_attendance_rate', 'course_difficulty',
     'marathon_weather_Cold', 'marathon_weather_Hot',
-    'marathon_weather_Rainy', 'marathon_weather_Windy'
+    'marathon_weather_Rainy', 'marathon_weather_Windy', "personal_best_minutes"
 ]
 
 def preprocess_features(user_dict: dict,
