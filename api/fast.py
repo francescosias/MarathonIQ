@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 import joblib
 import os
+from project_logic.preprocess import preprocess_features
 
 # Custom project imports
 from project_logic.predict import predict
@@ -55,9 +56,12 @@ def index():
 def get_general_prediction(runner: RunnerData):
     """Uses general model logic"""
     data = runner.dict()
+    X_processed = preprocess_features(data)
+
     # Explicitly set model_type to 'general'
-    res = predict(app.state.model_general, data, model_type="general")
-    return {"predicted_finish_time": res}
+    res = predict(app.state.model_general, X_processed, model_type="general")
+    return {"predicted_finish_time": res, "pre-imputed data": float(X_processed.vo2_max.values)
+}
 
 @app.post('/predict/expert')
 def get_expert_prediction(runner: RunnerData):

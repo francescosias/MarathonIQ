@@ -16,7 +16,6 @@ MEDIANS_EXPERT = {
     'recovery_score':          6.0,
     'personal_best_minutes':  240.0,
 }
-
 # ============================================================
 # EXPECTED COLUMNS — order must match training exactly
 # ============================================================
@@ -69,9 +68,16 @@ def preprocess_features(user_dict: dict,
             df_processed[col] = df[col].values
 
     # 5. Median imputation — optional fields left at 0
+    #for col, median in medians.items():
+        #if col in df_processed.columns:
+            #if df_processed[col].iloc[0] == 0:
+                #df_processed[col] = median
+
     for col, median in medians.items():
         if col in df_processed.columns:
-            if df_processed[col].iloc[0] == 0:
-                df_processed[col] = median
+            val = df_processed[col].iloc[0]
+        # Değer None mu, NaN mı yoksa sayısal olarak 0 mı?
+        if pd.isna(val) or val == 0 or val == "0":
+            df_processed.at[0, col] = median
 
     return df_processed

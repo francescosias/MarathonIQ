@@ -7,9 +7,9 @@ def predict(model, data: dict, model_type: str = "general") -> float:
     This ensures 'personal_best_minutes' is handled for expert models.
     """
     # Important: Pass the model_type down to determine column structure
-    X_processed = preprocess_features(data, model_type=model_type)
+    #X_processed = preprocess_features(data, model_type=model_type)
 
-    prediction_array = model.predict(X_processed)
+    prediction_array = model.predict(data)
 
     final_prediction = float(prediction_array[0])
 
