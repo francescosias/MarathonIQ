@@ -1,18 +1,18 @@
 # data science
-numpy<2.0.0
+numpy==1.26.4
 pandas==2.2.3
-scikit-learn==1.6.1
-
-# Install the correct TensorFlow version
-tensorflow==2.16.2    # For both Intel and Apple silicon
-keras==3.8.0
+scikit-learn==1.5.2
 
 # Google Cloud
-google-cloud-storage
+google-cloud-storage==3.10.1
 
 # API
-fastapi
-uvicorn
+fastapi==0.136.1
+uvicorn==0.46.0
 
 # Model
-xgboost
+xgboost==2.0.3
+joblib==1.5.3
+
+# Visualization
+shap==0.45.1

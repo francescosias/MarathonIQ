@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 import joblib
+import shap
 import os
 
 # Custom project imports
@@ -51,13 +52,19 @@ def index():
 
 # --- PREDICTION ENDPOINTS ---
 
+# ADDED: shap value return statements
+
 @app.post('/predict/general')
 def get_general_prediction(runner: RunnerData):
     """Uses general model logic"""
     data = runner.dict()
     # Explicitly set model_type to 'general'
     res = predict(app.state.model_general, data, model_type="general")
-    return {"predicted_finish_time": res}
+    return {
+    "predicted_finish_time": res['prediction'],
+    "shap_values": res['shap_values'],
+    "base_value": res['base_value']
+    }
 
 @app.post('/predict/expert')
 def get_expert_prediction(runner: RunnerData):
@@ -69,4 +76,8 @@ def get_expert_prediction(runner: RunnerData):
 
     # Explicitly set model_type to 'expert'
     res = predict(app.state.model_expert, data, model_type="expert")
-    return {"predicted_finish_time": res}
+    return {
+    "predicted_finish_time": res['prediction'],
+    "shap_values": res['shap_values'],
+    "base_value": res['base_value']
+    }
