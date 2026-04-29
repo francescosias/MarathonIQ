@@ -1,4 +1,5 @@
 import pandas as pd
+import shap
 from project_logic.preprocess import preprocess_features
 
 def predict(model, data: dict, model_type: str = "general") -> float:
@@ -13,4 +14,18 @@ def predict(model, data: dict, model_type: str = "general") -> float:
 
     final_prediction = float(prediction_array[0])
 
-    return final_prediction
+
+    scaler = model.named_steps['scaler']
+    X_scaled = scaler.transform(X_processed)
+
+    xgb_model = model.named_steps['xgb_model']
+
+    explainer = shap.TreeExplainer(xgb_model)
+    shap_values = explainer.shap_values(X_scaled)
+    shap_dict = dict(zip(X_processed.columns, shap_values[0].tolist()))
+
+    return {
+        'prediction': final_prediction,
+        'shap_values': shap_dict,
+        'base_value': float(explainer.expected_value)
+        }
